@@ -5,4 +5,20 @@ Die Anwendung erzeugt sichere Passwörter direkt im Browser – mit auswählbare
 
 ---
 
+## 🐳 Docker
+
+Die Anwendung kann einfach mit Docker gestartet werden:
+
+```bash
+# Docker Image bauen
+docker build -t password-generator .
+
+# Container starten
+docker run -p 5000:5000 password-generator
+```
+
+Die Anwendung ist dann unter `http://localhost:5000` erreichbar.
+
+---
+
 
