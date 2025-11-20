@@ -1,4 +1,5 @@
 ## Only Debian 11/12/13
+## developent not done
 echo "docker install Start"
 echo off
 sudo apt remove docker docker-engine docker.io containerd runc
