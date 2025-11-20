@@ -10,7 +10,6 @@ def generate_password(length=12, upper=True, lower=True, digits=True, special=Tr
     Generiert ein Passwort anhand der gewünschten Optionen.
     Optimierte, schnelle Version.
     """
-
     # Zeichengruppen definieren
     pools = {
         "upper": string.ascii_uppercase,
