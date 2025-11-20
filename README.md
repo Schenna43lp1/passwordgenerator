@@ -2,8 +2,8 @@
 
 Ein moderner und leichter **Web-Passwort-Generator**, geschrieben in **Python** und **Flask**.  
 Die Anwendung erzeugt sichere Passwörter direkt im Browser – mit auswählbarer Länge und individuellen Zeichentypen.
+Developt by Markus Stuefer 
 
----
 
 ## 🐳 Docker
 
@@ -21,4 +21,7 @@ Die Anwendung ist dann unter `http://localhost:5000` erreichbar.
 
 ---
 
+Um es über Domain verfügbar zu machen braucht man ein revers proxy
+
+Zum beispiel HAProxy Oder Nginx
 
