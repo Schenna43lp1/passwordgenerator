@@ -1,77 +1,69 @@
+from flask import Flask, render_template, request
 import random
 import string
-from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
 
-def generate_password(length=12, use_upper=True, use_lower=True,
-                      use_digits=True, use_special=True) -> str:
-    """Erzeugt ein Passwort nach den gewünschten Kriterien."""
+def generate_password(length=12, upper=True, lower=True, digits=True, special=True):
+    """
+    Generiert ein Passwort anhand der gewünschten Optionen.
+    Optimierte, schnelle Version.
+    """
 
-    characters = ""
+    # Zeichengruppen definieren
+    pools = {
+        "upper": string.ascii_uppercase,
+        "lower": string.ascii_lowercase,
+        "digits": string.digits,
+        "special": "!$%&/()=?#@*+-_"
+    }
 
-    if use_upper:
-        characters += string.ascii_uppercase
-    if use_lower:
-        characters += string.ascii_lowercase
-    if use_digits:
-        characters += string.digits
-    if use_special:
-        characters += "!$%&/()=?#@*+-_"
+    # Ausgewählte Gruppen aktivieren
+    active_groups = []
+    if upper:   active_groups.append(pools["upper"])
+    if lower:   active_groups.append(pools["lower"])
+    if digits:  active_groups.append(pools["digits"])
+    if special: active_groups.append(pools["special"])
 
-    if not characters:
-        # Fallback: wenn nichts ausgewählt ist, nimm Kleinbuchstaben
-        characters = string.ascii_lowercase
+    # Fallback, falls nichts ausgewählt
+    if not active_groups:
+        active_groups = [pools["lower"]]
 
-    password_chars = []
+    # Aufbau: Erst 1 Zeichen aus jeder Kategorie, Rest aus allen
+    password = [random.choice(group) for group in active_groups]
 
-    # Sicherstellen, dass jede gewählte Kategorie mindestens einmal vorkommt
-    if use_upper:
-        password_chars.append(random.choice(string.ascii_uppercase))
-    if use_lower:
-        password_chars.append(random.choice(string.ascii_lowercase))
-    if use_digits:
-        password_chars.append(random.choice(string.digits))
-    if use_special:
-        password_chars.append(random.choice("!$%&/()=?#@*+-_"))
+    # Gesamter Zeichenpool
+    all_chars = "".join(active_groups)
 
     # Rest auffüllen
-    remaining = max(0, length - len(password_chars))
-    password_chars += random.choices(characters, k=remaining)
+    remaining = length - len(password)
+    if remaining > 0:
+        password.extend(random.choices(all_chars, k=remaining))
 
-    # Durchmischen
-    random.shuffle(password_chars)
+    # Reihenfolge mischen
+    random.shuffle(password)
 
-    return "".join(password_chars)
+    return "".join(password)
 
 
 @app.route("/", methods=["GET", "POST"])
 def index():
-    generated_password = None
+    password = None
 
     if request.method == "POST":
-        try:
-            length = int(request.form.get("length", "12"))
-        except ValueError:
-            length = 12
+        length = int(request.form.get("length", 12))
 
-        use_upper = request.form.get("upper") == "on"
-        use_lower = request.form.get("lower") == "on"
-        use_digits = request.form.get("digits") == "on"
-        use_special = request.form.get("special") == "on"
-
-        generated_password = generate_password(
+        password = generate_password(
             length=length,
-            use_upper=use_upper,
-            use_lower=use_lower,
-            use_digits=use_digits,
-            use_special=use_special
+            upper=request.form.get("upper") == "on",
+            lower=request.form.get("lower") == "on",
+            digits=request.form.get("digits") == "on",
+            special=request.form.get("special") == "on"
         )
 
-    return render_template("index.html", password=generated_password)
+    return render_template("index.html", password=password)
 
 
 if __name__ == "__main__":
-    # Debug=True nur für Entwicklung, nicht in Produktion benutzen
-    app.run(debug=True)
+    app.run(debug=False)

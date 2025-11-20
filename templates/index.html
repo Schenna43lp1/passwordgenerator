@@ -3,102 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <title>Passwort Generator</title>
-    <style>
-        body {
-            font-family: system-ui, sans-serif;
-            background: #121212;
-            color: #f5f5f5;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
-            margin: 0;
-            padding-top: 40px;
-        }
-        .card {
-            background: #1e1e1e;
-            padding: 24px;
-            border-radius: 10px;
-            width: 360px;
-            box-shadow: 0 0 25px rgba(0, 0, 0, 0.4);
-        }
-        h1 {
-            text-align: center;
-            margin-top: 0;
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin-bottom: 6px;
-        }
-        input[type="number"] {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 12px;
-            border-radius: 6px;
-            border: 1px solid #444;
-            background: #252525;
-            color: #f5f5f5;
-        }
-        .checkbox-group label {
-            display: block;
-            margin-bottom: 4px;
-            font-size: 14px;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            margin-top: 12px;
-            border-radius: 6px;
-            border: none;
-            background: #4f8cff;
-            color: #fff;
-            font-size: 15px;
-            cursor: pointer;
-        }
-        button:hover {
-            background: #3671e8;
-        }
-        .result {
-            margin-top: 18px;
-            padding: 10px;
-            background: #252525;
-            border-radius: 6px;
-            word-wrap: break-word;
-            text-align: center;
-            font-size: 16px;
-        }
-        .result-title {
-            margin-bottom: 6px;
-            font-size: 14px;
-            opacity: 0.8;
-        }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-<div class="card">
-    <h1>🔐 Passwort Generator</h1>
 
-    <form method="post">
-        <label for="length">Länge</label>
-        <input type="number" id="length" name="length" value="16" min="4" max="128">
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4">
 
-        <div class="checkbox-group">
-            <label><input type="checkbox" name="upper" checked> Großbuchstaben (A–Z)</label>
-            <label><input type="checkbox" name="lower" checked> Kleinbuchstaben (a–z)</label>
-            <label><input type="checkbox" name="digits" checked> Zahlen (0–9)</label>
-            <label><input type="checkbox" name="special" checked> Sonderzeichen (!, %, …)</label>
+<div class="bg-gray-800/70 backdrop-blur-xl shadow-xl border border-gray-700 rounded-2xl p-8 w-full max-w-md">
+
+    <h1 class="text-3xl font-semibold text-center mb-6">🔐 Passwort Generator</h1>
+
+    <form method="post" class="space-y-5">
+        <!-- Länge -->
+        <div>
+            <label class="block text-sm mb-1">Länge</label>
+            <input type="number" name="length" value="16" min="4" max="128"
+                   class="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
         </div>
 
-        <button type="submit">Passwort generieren</button>
+        <!-- Checkboxen -->
+        <div class="space-y-2 text-sm">
+            <label class="flex items-center gap-2">
+                <input type="checkbox" name="upper" checked class="accent-blue-500">
+                Großbuchstaben (A–Z)
+            </label>
+
+            <label class="flex items-center gap-2">
+                <input type="checkbox" name="lower" checked class="accent-blue-500">
+                Kleinbuchstaben (a–z)
+            </label>
+
+            <label class="flex items-center gap-2">
+                <input type="checkbox" name="digits" checked class="accent-blue-500">
+                Zahlen (0–9)
+            </label>
+
+            <label class="flex items-center gap-2">
+                <input type="checkbox" name="special" checked class="accent-blue-500">
+                Sonderzeichen (!@#$…)
+            </label>
+        </div>
+
+        <!-- Button -->
+        <button type="submit"
+                class="w-full py-3 rounded-lg bg-blue-600 hover:bg-blue-500 transition font-semibold">
+            Passwort generieren
+        </button>
     </form>
 
+    <!-- Ergebnis -->
     {% if password %}
-        <div class="result">
-            <div class="result-title">Dein generiertes Passwort:</div>
-            <div>{{ password }}</div>
+        <div class="mt-6 p-4 bg-gray-900 border border-gray-700 rounded-xl relative text-center select-all">
+            <span id="pw" class="break-words text-lg font-mono">{{ password }}</span>
+
+            <button onclick="copyPassword()"
+                    class="absolute top-3 right-3 text-xs bg-blue-600 px-2 py-1 rounded-md hover:bg-blue-500">
+                Kopieren
+            </button>
         </div>
     {% endif %}
+
 </div>
+
+<script>
+    function copyPassword() {
+        const pw = document.getElementById("pw").textContent;
+        navigator.clipboard.writeText(pw);
+        alert("Passwort kopiert!");
+    }
+</script>
+
 </body>
 </html>
